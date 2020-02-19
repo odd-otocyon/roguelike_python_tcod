@@ -1,5 +1,7 @@
 import tcod as libtecod
 
+from input_handlers import handle_keys
+
 def main():
   screen_width = 80
   screen_height = 50
@@ -21,10 +23,22 @@ def main():
     libtecod.console_put_char(0, player_x, player_y, '@', libtecod.BKGND_NONE)
     libtecod.console_flush()
 
-    key = libtecod.console_check_for_keypress()
+    action = handle_keys(key)
 
-    if key.vk == libtecod.KEY_ESCAPE:
+    move = action.get('move')
+    exit = action.get('exit')
+    fullscreen = action.get('fullscreen')
+
+    if move:
+      dx, dy = move
+      player_x += dx
+      player_y += dy
+
+    if exit:
       return True
+
+    if fullscreen:
+      libtecod.console_set_fullscreen(not libtecod.console_is_fullscreen)
 
 if __name__ == '__main__':
   main()
